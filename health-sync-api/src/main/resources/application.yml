@@ -1,9 +1,18 @@
 server:
-  port: 8080
+  port: 8079
 
 spring:
   application:
     name: has-api
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3306/health_sync
+    username: root
+    password: Paras123456!
+
 
 eureka:
   client:
