@@ -32,3 +32,57 @@ create table user_role_mapping(
     FOREIGN KEY (role_id) REFERENCES role(id),
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
+
+CREATE TABLE `doctor` (
+  `id` INT NOT NULL,
+  `first_name` VARCHAR(45) NULL,
+  `last_name` VARCHAR(45) NULL,
+  `email` VARCHAR(45) NULL,
+  `phone` VARCHAR(45) NULL,
+  `description` MEDIUMTEXT NULL,
+  `department_id` INT NULL,
+  `isVerified` TINYINT NULL,
+  `status` INT NULL,
+  `status_date` DATE NULL,
+  `status_reason` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `doctor_configuration` (
+    `id` int NOT NULL,
+    `doctor_id` varchar(45) DEFAULT NULL,
+    `configuration` json DEFAULT NULL,
+    PRIMARY KEY (`id`)
+  )
+
+CREATE TABLE `appointment` (
+    `id` INT NOT NULL,
+    `doctor_id` INT NULL,
+    `patient_id` INT NULL,
+    `appointment_time` DATETIME NULL,
+    `duration` INT NULL,
+    `status` INT NULL,
+    `status_reason` VARCHAR(100) NULL,
+    `status_date` DATETIME NULL,
+    PRIMARY KEY (`id`));
+
+
+CREATE TABLE `review` (
+  `id` INT NOT NULL,
+  `doctor_id` INT NULL,
+  `rating` VARCHAR(45) NULL,
+  `review` TEXT NULL,
+  `posted_by` INT NULL,
+  `is_anonymous` TINYINT NULL,
+  `created_on` DATETIME NULL,
+  PRIMARY KEY (`id`));
+
+
+CREATE TABLE `medical_records` (
+  `id` INT NOT NULL,
+  `doctor_id` INT NULL,
+  `patient_id` INT NULL,
+  `department_id` INT NULL,
+  `findings` LONGTEXT NULL,
+  `prescription` LONGTEXT NULL,
+  `created_on` DATETIME NULL,
+  PRIMARY KEY (`id`));
