@@ -45,11 +45,12 @@ CREATE TABLE `doctor` (
   `status` INT NULL,
   `status_date` DATE NULL,
   `status_reason` VARCHAR(45) NULL,
+  UNIQUE(email),
   PRIMARY KEY (`id`));
 
 CREATE TABLE `doctor_configuration` (
     `id` int NOT NULL,
-    `doctor_id` varchar(45) DEFAULT NULL,
+    `doctor_id` INT NOT NULL,
     `configuration` json DEFAULT NULL,
     PRIMARY KEY (`id`)
   )
