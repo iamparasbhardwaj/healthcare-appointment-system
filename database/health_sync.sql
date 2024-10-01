@@ -21,7 +21,7 @@ create table role(
     PRIMARY KEY (id)
 );
 
-INSERT INTO `role` (`id`, `name`) VALUES ('1', 'DOOCTOR');
+INSERT INTO `role` (`id`, `name`) VALUES ('1', 'DOCTOR');
 INSERT INTO `role` (`id`, `name`) VALUES ('2', 'PATIENT');
 
 create table user_role_mapping(
@@ -32,3 +32,84 @@ create table user_role_mapping(
     FOREIGN KEY (role_id) REFERENCES role(id),
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
+
+CREATE TABLE `patient` (
+  `id` INT NOT NULL,
+  `first_name` VARCHAR(45) NULL,
+  `last_name` VARCHAR(45) NULL,
+  `email` VARCHAR(45) NULL,
+  `phone_num` VARCHAR(45) NULL,
+  `status` INT NULL,
+  `status_date` DATE NULL,
+  `status_reason` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
+  UNIQUE INDEX `phone_num_UNIQUE` (`phone_num` ASC) VISIBLE);
+
+
+CREATE TABLE `doctor` (
+  `id` INT NOT NULL,
+  `first_name` VARCHAR(45) NULL,
+  `last_name` VARCHAR(45) NULL,
+  `email` VARCHAR(45) NULL,
+  `phone` VARCHAR(45) NULL,
+  `description` MEDIUMTEXT NULL,
+  `department_id` INT NULL,
+  `isVerified` TINYINT NULL,
+  `status` INT NULL,
+  `status_date` DATE NULL,
+  `status_reason` VARCHAR(45) NULL,
+  UNIQUE(email),
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `doctor_configuration` (
+    `id` int NOT NULL,
+    `doctor_id` INT NOT NULL,
+    `configuration` json DEFAULT NULL,
+    PRIMARY KEY (`id`)
+  )
+
+CREATE TABLE `appointment` (
+    `id` INT NOT NULL,
+    `doctor_id` INT NULL,
+    `patient_id` INT NULL,
+    `appointment_time` DATETIME NULL,
+    `duration` INT NULL,
+    `status` INT NULL,
+    `status_reason` VARCHAR(100) NULL,
+    `status_date` DATETIME NULL,
+    PRIMARY KEY (`id`));
+
+
+CREATE TABLE `review` (
+  `id` INT NOT NULL,
+  `doctor_id` INT NULL,
+  `rating` VARCHAR(45) NULL,
+  `review` TEXT NULL,
+  `posted_by` INT NULL,
+  `is_anonymous` TINYINT NULL,
+  `created_on` DATETIME NULL,
+  PRIMARY KEY (`id`));
+
+
+CREATE TABLE `medical_records` (
+  `id` INT NOT NULL,
+  `doctor_id` INT NULL,
+  `patient_id` INT NULL,
+  `department_id` INT NULL,
+  `findings` LONGTEXT NULL,
+  `prescription` LONGTEXT NULL,
+  `created_on` DATETIME NULL,
+  PRIMARY KEY (`id`));
+
+  CREATE TABLE `address` (
+    `id` INT NOT NULL,
+    `address_line_1` VARCHAR(45) NULL,
+    `address_line_2` VARCHAR(45) NULL,
+    `city` VARCHAR(45) NULL,
+    `state` VARCHAR(45) NULL,
+    `zip` VARCHAR(45) NULL,
+    `type_id` INT NULL,
+    `owner_type_id` INT NULL,
+    `owner_id` INT NULL,
+    PRIMARY KEY (`id`));
