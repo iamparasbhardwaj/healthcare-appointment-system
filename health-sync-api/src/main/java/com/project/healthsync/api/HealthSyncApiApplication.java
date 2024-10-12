@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableZuulProxy
 @SpringBootApplication
-		(exclude = {DataSourceAutoConfiguration.class })
+		//(exclude = {DataSourceAutoConfiguration.class })
 @ComponentScan(basePackages = "com.project")
 @EnableJpaRepositories("com.project")
 @EntityScan(basePackages = "com.project")

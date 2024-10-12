@@ -1,7 +1,6 @@
-package com.project.healthsync.api;
+package com.project.healthsync.api.controller;
 
-import com.project.healthsync.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.healthsync.api.dao.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/hello")
 public class HelloWorld {
-
     private UserRepository userRepository;
 
     HelloWorld(UserRepository userRespository){
