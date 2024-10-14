@@ -1,6 +1,6 @@
 package com.project.healthsync.api.controller;
 
-import com.project.healthsync.api.dao.UserRepository;
+import com.project.healthsync.api.dao.UserDao;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/hello")
 public class HelloWorld {
-    private UserRepository userRepository;
+    private UserDao userRepository;
 
-    HelloWorld(UserRepository userRespository){
+    HelloWorld(UserDao userRespository){
         this.userRepository=userRespository;
     }
 
