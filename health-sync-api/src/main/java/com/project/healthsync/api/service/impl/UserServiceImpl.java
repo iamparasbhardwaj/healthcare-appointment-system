@@ -18,12 +18,25 @@ public class UserServiceImpl implements IUserService {
         this.userDao = userDao;
     }
 
+    /**
+     * Service method to perform validation and create a user.
+     *
+     * @param userRequest
+     * @return
+     */
     @Override
     public ResponseEntity<String> createUser(UserRequestDTO userRequest) {
-        User user = populateAndSaveUser(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), CommonMethods.generatePasswordHash(userRequest.getPassword()), userRequest.getPhone(), null);
-        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri()).build();
+        User user = populateAndSaveUser(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPassword(), userRequest.getPhone(), null);
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/id/{id}").buildAndExpand(user.getId()).toUri()).build();
     }
 
+    /**
+     * Method to update the user.
+     *
+     * @param userId
+     * @param userRequest
+     * @return
+     */
     @Override
     public ResponseEntity<String> updateUser(Long userId, UserRequestDTO userRequest) {
         User user = this.userDao.getById(userId);
@@ -31,7 +44,21 @@ public class UserServiceImpl implements IUserService {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Method to create or update user based on given parameters.
+     *
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param password
+     * @param phone
+     * @param user
+     * @return
+     */
     private User populateAndSaveUser(String firstName, String lastName, String email, String password, String phone, User user) {
+        /*
+         * If user is not passed create an empty user object , else update existing.
+         */
         if (user == null) {
             user = new User();
         }
