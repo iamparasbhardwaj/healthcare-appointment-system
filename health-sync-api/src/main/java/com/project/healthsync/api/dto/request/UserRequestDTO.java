@@ -1,22 +1,23 @@
 package com.project.healthsync.api.dto.request;
 
 import com.project.healthsync.api.annotations.PasswordValidation;
+import com.project.healthsync.api.validationgroups.Create;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
 public class UserRequestDTO {
-    @NotNull
+    @NotNull(groups = Create.class)
     private String firstName;
-    @NotNull
+    @NotNull(groups = Create.class)
     private String lastName;
-    @NotNull
+    @NotNull(groups = Create.class)
     @PasswordValidation
     private String password;
-    @NotNull
+    @NotNull(groups = Create.class)
     @Email
     private String email;
-    @NotNull
+    @NotNull(groups = Create.class)
     private String phone;
 
     public String getFirstName() {

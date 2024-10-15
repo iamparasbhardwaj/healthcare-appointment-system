@@ -7,6 +7,8 @@ public class PasswordValidator implements ConstraintValidator<PasswordValidation
 {
     private final String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
     public boolean isValid(String password, ConstraintValidatorContext cxt) {
-        return password.matches(this.pattern);
+        if(password!=null)
+            return password.matches(this.pattern);
+        return Boolean.TRUE;
     }
 }

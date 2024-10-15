@@ -1,11 +1,11 @@
 package com.project.healthsync.api.service.impl;
 
+import com.project.healthsync.api.commons.CommonMethods;
 import com.project.healthsync.api.dao.UserDao;
 import com.project.healthsync.api.dto.request.UserRequestDTO;
 import com.project.healthsync.api.entites.User;
 import com.project.healthsync.api.service.IUserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,12 +19,19 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public ResponseEntity<String> saveUser(UserRequestDTO userRequest) {
-        User user = populateUser(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPassword(), userRequest.getPhone(), null);
+    public ResponseEntity<String> createUser(UserRequestDTO userRequest) {
+        User user = populateAndSaveUser(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), CommonMethods.generatePasswordHash(userRequest.getPassword()), userRequest.getPhone(), null);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri()).build();
     }
 
-    private User populateUser(String firstName, String lastName, String email, String password, String phone, User user) {
+    @Override
+    public ResponseEntity<String> updateUser(Long userId, UserRequestDTO userRequest) {
+        User user = this.userDao.getById(userId);
+        user = populateAndSaveUser(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPassword(), userRequest.getPhone(), user);
+        return ResponseEntity.noContent().build();
+    }
+
+    private User populateAndSaveUser(String firstName, String lastName, String email, String password, String phone, User user) {
         if (user == null) {
             user = new User();
         }
@@ -35,7 +42,7 @@ public class UserServiceImpl implements IUserService {
         if (email != null)
             user.setEmail(email);
         if (password != null)
-            user.setPassword(password);
+            user.setPassword(CommonMethods.generatePasswordHash(password));
         if (phone != null)
             user.setPhone(phone);
         return this.userDao.save(user);
