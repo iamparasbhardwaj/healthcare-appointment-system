@@ -30,11 +30,11 @@ public class TokenManager implements Serializable {
         return Jwts.builder().setClaims(claims).setSubject(user.getEmail()).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(getKey(), SignatureAlgorithm.HS256).compact();
     }
 
-    Boolean isToken 
-
-    String getUserNameFromToken(){
-
-    }
+//    Boolean isToken
+//
+//    String getUserNameFromToken(){
+//
+//    }
 
     private Key getKey(){
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);

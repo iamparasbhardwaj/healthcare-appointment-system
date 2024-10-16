@@ -12,4 +12,6 @@ public interface IUserController {
     public ResponseEntity<String> createUser(UserRequestDTO user);
     public ResponseEntity<String> updateUser(String id , UserRequestDTO user);
     ResponseEntity<String> auth(AuthRequestDTO authRequestDTO);
+	public ResponseEntity<String> getUser(String id);
+	
 }
