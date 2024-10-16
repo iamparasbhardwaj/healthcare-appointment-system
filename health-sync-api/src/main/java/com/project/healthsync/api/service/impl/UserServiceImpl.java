@@ -1,13 +1,19 @@
 package com.project.healthsync.api.service.impl;
 
-import com.project.healthsync.api.commons.CommonMethods;
-import com.project.healthsync.api.dao.UserDao;
-import com.project.healthsync.api.dto.request.UserRequestDTO;
-import com.project.healthsync.api.entites.User;
-import com.project.healthsync.api.service.IUserService;
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.healthsync.api.commons.CommonMethods;
+import com.project.healthsync.api.dao.UserDao;
+import com.project.healthsync.api.dto.request.UserRequestDTO;
+import com.project.healthsync.api.dto.response.UserResponseDTO;
+import com.project.healthsync.api.entites.User;
+import com.project.healthsync.api.service.IUserService;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -42,6 +48,24 @@ public class UserServiceImpl implements IUserService {
         User user = this.userDao.getById(userId);
         user = populateAndSaveUser(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPassword(), userRequest.getPhone(), user);
         return ResponseEntity.noContent().build();
+    }
+    
+    @Override
+    public ResponseEntity<String> getUser(Long userId) {
+        Optional<User> userOpt = userDao.findById(userId);
+        String responseBody = "";
+        if(userOpt.isPresent()) {
+        	User user = userOpt.get();
+        	UserResponseDTO userResponseDTO =  new UserResponseDTO(user.getId(),user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone());	
+        	 ObjectMapper om = new ObjectMapper();
+              try {
+				responseBody = om.writeValueAsString(userResponseDTO);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+		return ResponseEntity.ok().body(responseBody);
     }
 
     /**
