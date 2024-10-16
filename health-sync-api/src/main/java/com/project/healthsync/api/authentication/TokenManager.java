@@ -1,6 +1,7 @@
 package com.project.healthsync.api.authentication;
 
 import com.project.healthsync.api.entites.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -30,11 +31,23 @@ public class TokenManager implements Serializable {
         return Jwts.builder().setClaims(claims).setSubject(user.getEmail()).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(getKey(), SignatureAlgorithm.HS256).compact();
     }
 
-//    Boolean isToken
-//
-//    String getUserNameFromToken(){
-//
-//    }
+    public Boolean isTokenValid(String token){
+        final Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token).getBody();
+        return !claims.getExpiration().before(new Date());
+    }
+
+    public String getUserNameFromToken(String token){
+        final Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token).getBody();
+        return claims.getSubject();
+    }
 
     private Key getKey(){
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);

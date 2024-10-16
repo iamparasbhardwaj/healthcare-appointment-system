@@ -11,6 +11,9 @@ import com.project.healthsync.api.dto.response.UserResponseDTO;
 import com.project.healthsync.api.entites.User;
 import com.project.healthsync.api.service.IUserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,10 +24,12 @@ public class UserServiceImpl implements IUserService {
 
     private UserDao userDao;
     private TokenManager tokenManager;
+    private AuthenticationManager authenticationManager;
 
-    UserServiceImpl(UserDao userDao,TokenManager tokenManager) {
+    UserServiceImpl(UserDao userDao, TokenManager tokenManager, AuthenticationManager authenticationManager) {
         this.userDao = userDao;
         this.tokenManager = tokenManager;
+        this.authenticationManager = authenticationManager;
     }
 
     /**
@@ -52,30 +57,36 @@ public class UserServiceImpl implements IUserService {
         user = populateAndSaveUser(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPassword(), userRequest.getPhone(), user);
         return ResponseEntity.noContent().build();
     }
-    
+
     @Override
     public ResponseEntity<String> getUser(Long userId) {
         Optional<User> userOpt = userDao.findById(userId);
         String responseBody = "";
-        if(userOpt.isPresent()) {
-        	User user = userOpt.get();
-        	UserResponseDTO userResponseDTO =  new UserResponseDTO(user.getId(),user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone());
-        	 ObjectMapper om = new ObjectMapper();
-              try {
-				responseBody = om.writeValueAsString(userResponseDTO);
-			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            UserResponseDTO userResponseDTO = new UserResponseDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone());
+            ObjectMapper om = new ObjectMapper();
+            try {
+                responseBody = om.writeValueAsString(userResponseDTO);
+            } catch (JsonProcessingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-		return ResponseEntity.ok().body(responseBody);
+        return ResponseEntity.ok().body(responseBody);
     }
 
     @Override
     public ResponseEntity<String> auth(AuthRequestDTO auth) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        auth.getEmail(),
+                        auth.getPassword()
+                )
+        );
         Optional<User> optionalUser = this.userDao.findByEmail(auth.getEmail());
-        String token="";
-        if(optionalUser.isPresent()){
+        String token = "";
+        if (optionalUser.isPresent()) {
             token = tokenManager.generateJWTToken(optionalUser.get());
         }
         return ResponseEntity.ok().body(token);
