@@ -2,6 +2,7 @@ package com.project.healthsync.api.controller.impl;
 
 import com.project.healthsync.api.controller.IUserController;
 import com.project.healthsync.api.dto.request.UserRequestDTO;
+import com.project.healthsync.api.entites.User;
 import com.project.healthsync.api.service.IUserService;
 import com.project.healthsync.api.validationgroups.Create;
 import jakarta.validation.Valid;
@@ -30,6 +31,13 @@ public class UserController implements IUserController {
     public ResponseEntity<String> updateUser(@PathVariable String id ,@Valid @RequestBody UserRequestDTO user) {
         Long userId = Long.valueOf(id);
         return userService.updateUser(userId,user);
+    }
+    
+    @GetMapping("/id/{id}")
+    @Override
+    public ResponseEntity<String> getUser(@PathVariable String id) {
+        Long userId = Long.valueOf(id);
+        return userService.getUser(userId);
     }
 }
 
