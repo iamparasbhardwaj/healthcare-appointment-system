@@ -1,7 +1,9 @@
 package com.project.healthsync.api.service.impl;
 
+import com.project.healthsync.api.authentication.TokenManager;
 import com.project.healthsync.api.commons.CommonMethods;
 import com.project.healthsync.api.dao.UserDao;
+import com.project.healthsync.api.dto.request.AuthRequestDTO;
 import com.project.healthsync.api.dto.request.UserRequestDTO;
 import com.project.healthsync.api.entites.User;
 import com.project.healthsync.api.service.IUserService;
@@ -9,13 +11,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements IUserService {
 
     private UserDao userDao;
+    private TokenManager tokenManager;
 
-    UserServiceImpl(UserDao userDao) {
+    UserServiceImpl(UserDao userDao,TokenManager tokenManager) {
         this.userDao = userDao;
+        this.tokenManager = tokenManager;
     }
 
     /**
@@ -42,6 +48,16 @@ public class UserServiceImpl implements IUserService {
         User user = this.userDao.getById(userId);
         user = populateAndSaveUser(userRequest.getFirstName(), userRequest.getLastName(), userRequest.getEmail(), userRequest.getPassword(), userRequest.getPhone(), user);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<String> auth(AuthRequestDTO auth) {
+        Optional<User> optionalUser = this.userDao.findByEmail(auth.getEmail());
+        String token="";
+        if(optionalUser.isPresent()){
+            token = tokenManager.generateJWTToken(optionalUser.get());
+        }
+        return ResponseEntity.ok().body(token);
     }
 
     /**
